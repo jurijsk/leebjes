@@ -1,1 +1,9 @@
 leebjs is another DOM to Javascript abstraction layer with is not so mush browsers compatible but hopefully some day it will be.
+
+== History ==
+ * spontaneously developed since the middle of 2011 I guess
+29.02.2012
+ * initial upload
+ * provides very partial abstraction for Mouse and Sceen.
+ * provides very partial abstraction for DOMElement and Window.
+ * some methods for events management
