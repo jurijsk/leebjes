@@ -25,11 +25,10 @@
 			this.whoIsHovered = whoIsHovered;
 
 			this.addOnLeave = addOnLeave;
-
+			this.addOnEnter = addOnEnter;
 		};
 
 		var getPos = function () {
-			
 			return pos;
 		};
 
@@ -58,6 +57,21 @@
 			enterListeners[listener.getId()] = { 'control': listener, 'callback': callback };
 		};
 
+		var fireOnEnter = function (enteredControl, event) {
+			if (!enterListeners) {
+				return;
+			}
+			if (!enteredControl) {
+				return;
+			}
+			var listenerMeta = enterListeners[enteredControl.getId()];
+			if (!listenerMeta) {
+				return;
+			}
+			var args = Array.prototype.concat.apply([], arguments);
+			listenerMeta.callback.apply(null, args);
+		};
+
 
 
 		var leaveListeners = null;
@@ -70,7 +84,7 @@
 
 
 		//it's posible to optimize here at the expense of enter event.
-		var fireOnLeave = function (leavedControl) {
+		var fireOnLeave = function (leavedControl, event) {
 			if (!leaveListeners) {
 				return;
 			}
@@ -78,7 +92,7 @@
 			if (!leavedControl) {
 				return;
 			}
-			
+
 			var listenerMeta = leaveListeners[leavedControl.getId()];
 			if (!listenerMeta) {
 				return;
@@ -126,6 +140,7 @@
 				return;
 			}
 			fireOnLeave(leavedControl, event);
+			fireOnEnter(enteredControl, event);
 		};
 
 		var wheelListeners = null;

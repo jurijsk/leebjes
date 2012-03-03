@@ -5,12 +5,11 @@
 	var events = yk.Events;
 	var uicontrols = yk.ui.controls;
 	var devices = yk.devices;
+	var structures = yk.structures;
 	var namespace = yk;
 
-
 	namespace.App = new function () {
-		var controls = [];
-		var win = null;
+
 
 		var publish = function () {
 			this.registerControl = registerControl;
@@ -18,22 +17,28 @@
 			this.getWindow = getWindow;
 			this.getMouse = getMouse;
 			this.whoIsFocused = whoIsFocused;
-
-			this._controls = controls;
+			if (_DEBUG) {
+				this._controls = controls;
+			}
 		};
 
 		var registerControl = function (control, controlId) {
 			controlId = controlId || control.getElement().id;
 			controls[controlId] = control;
+			controlsByElements.add(control.getElement(), control);
 		};
 
 		var getControl = function (element) {
-			var id = null;
+			//var id = null;
 			do {
-				id = element.id || element.nodeName;
-				if (id in controls) {
-					return controls[id];
-				}
+				var control = controlsByElements.getValue(element);
+
+				if (control) { return control; }
+
+				//id = element.id || element.nodeName;
+				//if (id in controls) {
+				//	return controls[id];
+				//}
 				element = element.parentNode;
 			} while (element);
 			return null;
@@ -67,8 +72,14 @@
 		};
 
 
+		var controls = [];
+		var controlsByElements = null;
+		var win = null;
+
 		(function () {
+			controlsByElements = new structures.Dictionary();
 			publish.apply(this);
+
 			waitDom(function () {
 				win = new uicontrols.Window('win');
 				win.addOnClick(onClick);
